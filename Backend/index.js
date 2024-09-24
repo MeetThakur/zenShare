@@ -13,6 +13,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/getText", (req, res) => {
+  text = fs.readFileSync("data.txt", "utf8");
   res.send(text);
 });
 
