@@ -21,7 +21,7 @@ export default function App() {
 
   const sendReq = async () => {
     const text = textareaRef.current.value;
-    await fetch("https://zens.onrender.com/setText", {
+    await fetch("https://zenshare.onrender.com/setText", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -32,7 +32,7 @@ export default function App() {
   };
 
   const getText = async () => {
-    const response = await fetch("https://zens.onrender.com/getText");
+    const response = await fetch("https://zenshare.onrender.com/getText");
     const data = await response.text();
     textareaRef.current.value = data;
   };
