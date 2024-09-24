@@ -1,10 +1,10 @@
 const express = require('express');
 const app = express(); 
 const cors = require('cors');
-
+const fs = require('fs');
 app.use(cors());
 
-let text = "Hello World";
+let text = fs.readFileSync('text.txt', 'utf8');
 
 app.use(express.json());
 
@@ -13,12 +13,12 @@ app.get('/', (req, res) => {
 });
 
 app.get('/getText', (req, res) => {
-    res.send(text);
+    res.send(text); 
 });
 
 app.post('/setText', (req, res) => {
     console.log((req.body)[0].text);
-    text = (req.body)[0].text;
+    fs.writeFileSync('text.txt', (req.body)[0].text);
     res.send('Text has been updated');
 });
 
