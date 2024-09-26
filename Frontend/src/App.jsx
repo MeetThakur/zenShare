@@ -1,38 +1,61 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Textarea } from "./components/ui/textarea.jsx";
-import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription, DialogClose } from "./components/ui/dialog.jsx";
+import { Toaster, toast } from "react-hot-toast";
 
 export default function App() {
   const [isEditing, setIsEditing] = useState(false);
-  const [checkPassword, setCheckPassword] = useState(true);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [inputPassword, setInputPassword] = useState("");
   const textareaRef = useRef(null);
-
-  const unlock = () => {
-    if (inputPassword === "meet") {
-      setIsEditing(true);
-      setCheckPassword(false);
-      setIsDialogOpen(false);
-    } else {
-      alert("Incorrect password");
-    }
-  };
+  const idRef = useRef(null);
 
   const sendReq = async () => {
+    const id = idRef.current.value;
+    if (!id) {
+      toast.error("Please enter a code!", {
+        style: {
+          borderRadius: "10px",
+          background: "#f9b17a",
+          color: "black",
+        },
+      });
+      return;
+    }
     const text = textareaRef.current.value;
     await fetch("https://zenshare.onrender.com/setText", {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify([{ text }])
+      body: JSON.stringify([{ id, text }]),
     });
+    toast.success("Saved!", {
+      style: {
+        borderRadius: "10px",
+        background: "#f9b17a",
+        color: "black",
+      },
+    });
+
     setIsEditing(false);
   };
 
-  const getText = async () => {
-    const response = await fetch("https://zenshare.onrender.com/getText");
+  const setEdit = () => {
+    const id = idRef.current.value;
+    if (!id) {
+      toast.error("Please enter a code!", {
+        style: {
+          borderRadius: "10px",
+          background: "#f9b17a",
+          color: "black",
+        },
+      });
+      return;
+    }
+    getText(id);
+    setIsEditing(true);
+  };
+
+  const getText = async (id) => {
+    const response = await fetch("https://zenshare.onrender.com/getText?id=" + id);
     const data = await response.text();
     textareaRef.current.value = data;
   };
@@ -43,62 +66,51 @@ export default function App() {
 
   return (
     <>
-      <div className="w-full text-center text-xl mt-2 text-[white] head">zenShare.</div>
+      <Toaster />
+      <div className="w-full text-center text-xl mt-2 text-[#f9b17a] head">
+        zenShare.
+      </div>
       <div className="w-full flex items-center flex-col gap-[2vw]">
         <Textarea
           ref={textareaRef}
-          className="text-[white] w-[90vw] h-[80vh] mt-4 text-[12px] font-mono disabled:text-[white] disabled:opacity-100 disabled:cursor-auto"
+          className="text-[white] bg-[#2d3250] w-[95vw] h-[80vh] mt-4 text-[13px] font-bold font-mono disabled:text-[white] disabled:opacity-100 disabled:cursor-auto border-[#f9b17a] body"
           disabled={!isEditing}
         />
-        <div className="justify-start">
-          {isEditing ? (
-            <button
-              className="text-black bg-white px-2 rounded-md"
-              onClick={sendReq}
-            >
-              Save
-            </button>
-          ) : (
-            <button
-              className="text-black bg-white px-2 rounded-md"
-              onClick={checkPassword ? () => setIsDialogOpen(true) : () => setIsEditing(true)}
-            >
-              Edit
-            </button>
-          )}
+        <div className="flex justify-center items-center gap-6">
+          <div className="w-fit">
+            <input
+              type="text"
+              placeholder="Enter code"
+              className="text-white text-[20px] w-[150px] focus:outline-none bg-[#2d3250] border-[1px] border-[#f9b17a] rounded-md p-1 text-center h-[35px]"
+              ref={idRef}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  {
+                    getText(e.target.value);
+                  }
+                }
+              }}
+            />
+          </div>
+          <div className="justify-start">
+            {isEditing ? (
+              <button
+                className="text-black bg-[#f9b17a] px-4 rounded-md h-[35px]"
+                onClick={sendReq}
+              >
+                Save
+              </button>
+            ) : (
+              <button
+                className="text-black bg-[#f9b17a] px-4 rounded-md h-[35px]"
+                onClick={setEdit}
+              >
+                Edit
+              </button>
+            )}
+          </div>
         </div>
       </div>
-
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogTrigger asChild>
-          <button className="hidden">Open Dialog</button>
-        </DialogTrigger>
-        <DialogContent className="bg-[#09090b]">
-          <DialogTitle>Enter Password</DialogTitle>
-          <DialogDescription className="text-white">
-            Please enter the password to unlock editing.
-          </DialogDescription>
-          <input
-            type="text"
-            value={inputPassword}
-            onChange={(e) => setInputPassword(e.target.value)}
-            className="rounded-lg p-2 w-full"
-          />
-          <div className="mt-4 flex justify-end">
-            <button
-              className="text-black bg-white px-2 rounded-md mr-2"
-              onClick={unlock}
-            >
-              Unlock
-            </button>
-            <DialogClose asChild>
-              <button className="text-black bg-white px-2 rounded-md">
-                Cancel
-              </button>
-            </DialogClose>
-          </div>
-        </DialogContent>
-      </Dialog>
     </>
   );
 }
