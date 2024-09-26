@@ -13,7 +13,8 @@ export default function App() {
       toast.error("Please enter a code!", {
         style: {
           borderRadius: "10px",
-          background: "#f9b17a",
+          borderColor: "black",
+          background: "#ffffff",
           color: "black",
         },
       });
@@ -30,7 +31,7 @@ export default function App() {
     toast.success("Saved!", {
       style: {
         borderRadius: "10px",
-        background: "#f9b17a",
+        background: "#ebebeb",
         color: "black",
       },
     });
@@ -43,8 +44,7 @@ export default function App() {
     if (!id) {
       toast.error("Please enter a code!", {
         style: {
-          borderRadius: "10px",
-          background: "#f9b17a",
+          background: "#ebebeb",
           color: "black",
         },
       });
@@ -67,13 +67,13 @@ export default function App() {
   return (
     <>
       <Toaster />
-      <div className="w-full text-center text-xl mt-2 text-[#f9b17a] head">
+      <div className="w-full text-center text-xl mt-2 text-[#ebebeb] head">
         zenShare.
       </div>
       <div className="w-full flex items-center flex-col gap-[2vw]">
         <Textarea
           ref={textareaRef}
-          className="text-[white] bg-[#2d3250] w-[95vw] h-[80vh] mt-4 text-[13px] font-bold font-mono disabled:text-[white] disabled:opacity-100 disabled:cursor-auto border-[#f9b17a] body"
+          className="text-[black] bg-[#ebebeb] w-[95vw] h-[80vh] mt-4 text-[13px] font-bold font-mono disabled:text-[black] disabled:opacity-100 disabled:cursor-auto body"
           disabled={!isEditing}
         />
         <div className="flex justify-center items-center gap-6">
@@ -81,7 +81,7 @@ export default function App() {
             <input
               type="text"
               placeholder="Enter code"
-              className="text-white text-[20px] w-[150px] focus:outline-none bg-[#2d3250] border-[1px] border-[#f9b17a] rounded-md p-1 text-center h-[35px]"
+              className="text-white text-[20px] w-[150px] focus:outline-none bg-[black] border-[1px] border-[#ebebeb] rounded-md p-1 text-center h-[35px]"
               ref={idRef}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
@@ -95,14 +95,14 @@ export default function App() {
           <div className="justify-start">
             {isEditing ? (
               <button
-                className="text-black bg-[#f9b17a] px-4 rounded-md h-[35px]"
+                className="text-black bg-[#ebebeb] px-4 rounded-md h-[35px]"
                 onClick={sendReq}
               >
                 Save
               </button>
             ) : (
               <button
-                className="text-black bg-[#f9b17a] px-4 rounded-md h-[35px]"
+                className="text-black bg-[#ebebeb] px-4 rounded-md h-[35px]"
                 onClick={setEdit}
               >
                 Edit
